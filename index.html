@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025年照片旅游合集</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- EXIF.js库用于提取照片元数据 -->
+    <script src="https://cdn.jsdelivr.net/npm/exif-js@2.3.0/exif.min.js"></script>
+</head>
+<body>
+    <!-- 页面头部 -->
+    <header class="header">
+        <div class="header-content">
+            <h1 class="title">2025年照片旅游合集</h1>
+            <p class="subtitle">记录美好时光，分享旅行故事</p>
+        </div>
+    </header>
+
+    <!-- 导航菜单 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#home" class="nav-link active">首页</a></li>
+                <li class="nav-item"><a href="#upload" class="nav-link">创建相册</a></li>
+                <li class="nav-item"><a href="#spring" class="nav-link">春季</a></li>
+                <li class="nav-item"><a href="#summer" class="nav-link">夏季</a></li>
+                <li class="nav-item"><a href="#autumn" class="nav-link">秋季</a></li>
+                <li class="nav-item"><a href="#winter" class="nav-link">冬季</a></li>
+                <li class="nav-item"><a href="#about" class="nav-link">关于</a></li>
+            </ul>
+            <!-- 移动端菜单按钮 -->
+            <button class="menu-toggle" id="menuToggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 首页横幅 -->
+        <section id="home" class="hero-section">
+            <div class="hero-container">
+                <div class="hero-slideshow" id="heroSlideshow">
+                    <div class="slideshow-slide active">
+                        <img src="https://picsum.photos/1200/600?random=1" alt="旅行照片1" class="hero-image">
+                        <div class="slide-caption">
+                            <h2>春日樱花季</h2>
+                            <p>日本 · 东京</p>
+                        </div>
+                    </div>
+                    <div class="slideshow-slide">
+                        <img src="https://picsum.photos/1200/600?random=2" alt="旅行照片2" class="hero-image">
+                        <div class="slide-caption">
+                            <h2>夏日海滩</h2>
+                            <p>泰国 · 普吉岛</p>
+                        </div>
+                    </div>
+                    <div class="slideshow-slide">
+                        <img src="https://picsum.photos/1200/600?random=3" alt="旅行照片3" class="hero-image">
+                        <div class="slide-caption">
+                            <h2>秋日红叶</h2>
+                            <p>加拿大 · 枫叶大道</p>
+                        </div>
+                    </div>
+                    <div class="slideshow-slide">
+                        <img src="https://picsum.photos/1200/600?random=4" alt="旅行照片4" class="hero-image">
+                        <div class="slide-caption">
+                            <h2>冬日雪景</h2>
+                            <p>瑞士 · 阿尔卑斯山</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 轮播控制按钮 -->
+                <button class="slideshow-btn prev-btn" id="prevBtn">&#10094;</button>
+                <button class="slideshow-btn next-btn" id="nextBtn">&#10095;</button>
+                <!-- 轮播指示器 -->
+                <div class="slideshow-indicators" id="slideshowIndicators"></div>
+            </div>
+        </section>
+
+        <!-- 照片上传区域 -->
+        <section id="upload" class="upload-section">
+            <div class="container">
+                <h2 class="section-title">创建您的专属相册</h2>
+                <p class="section-description">上传您的2025年旅行照片，系统将自动根据时间和地点为您分类整理</p>
+                
+                <div class="upload-container">
+                    <!-- 上传区域 -->
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-content">
+                            <div class="upload-icon">📸</div>
+                            <h3>点击或拖拽照片到此处上传</h3>
+                            <p>支持JPG、PNG格式，最多可上传1000张照片</p>
+                            <input type="file" id="fileInput" accept="image/*" multiple>
+                            <button class="upload-btn" id="uploadBtn">选择照片</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 上传信息和控制 -->
+                    <div class="upload-info">
+                        <div class="info-stats">
+                            <span id="photoCount">已选择 0 张照片</span>
+                            <span id="totalSize">总大小: 0 MB</span>
+                        </div>
+                        <div class="info-actions">
+                            <button class="btn btn-secondary" id="clearBtn">清空选择</button>
+                            <button class="btn btn-primary" id="generateBtn" disabled>生成相册</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 照片预览区域 -->
+                    <div class="preview-container">
+                        <h3>照片预览</h3>
+                        <div class="preview-grid" id="previewGrid"></div>
+                        <div class="preview-placeholder" id="previewPlaceholder">
+                            <p>上传照片后将在这里显示预览</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 春季照片集 -->
+        <section id="spring" class="gallery-section">
+            <div class="container">
+                <h2 class="section-title">春季旅行</h2>
+                <p class="section-description">春暖花开，万物复苏，记录春日里的美好时光</p>
+                <div class="photo-grid" id="springGrid"></div>
+            </div>
+        </section>
+
+        <!-- 夏季照片集 -->
+        <section id="summer" class="gallery-section">
+            <div class="container">
+                <h2 class="section-title">夏季旅行</h2>
+                <p class="section-description">阳光沙滩，海浪椰林，享受夏日的热情与活力</p>
+                <div class="photo-grid" id="summerGrid"></div>
+            </div>
+        </section>
+
+        <!-- 秋季照片集 -->
+        <section id="autumn" class="gallery-section">
+            <div class="container">
+                <h2 class="section-title">秋季旅行</h2>
+                <p class="section-description">红叶知秋，金风送爽，感受秋天的浪漫与诗意</p>
+                <div class="photo-grid" id="autumnGrid"></div>
+            </div>
+        </section>
+
+        <!-- 冬季照片集 -->
+        <section id="winter" class="gallery-section">
+            <div class="container">
+                <h2 class="section-title">冬季旅行</h2>
+                <p class="section-description">银装素裹，白雪皑皑，体验冬日的纯净与宁静</p>
+                <div class="photo-grid" id="winterGrid"></div>
+            </div>
+        </section>
+
+        <!-- 关于页面 -->
+        <section id="about" class="about-section">
+            <div class="container">
+                <h2 class="section-title">关于这个合集</h2>
+                <div class="about-content">
+                    <div class="about-text">
+                        <p>这是一个记录2025年旅行经历的照片合集，包含了春夏秋冬四个季节的精彩瞬间。</p>
+                        <p>通过这个合集，我希望分享旅途中的美好时光，记录那些令人难忘的风景和故事。</p>
+                        <p>每一张照片都有它独特的故事，每一次旅行都带来新的体验和感悟。</p>
+                        <p>感谢您的访问，希望这些照片能给您带来愉悦和灵感！</p>
+                    </div>
+                    <div class="about-image">
+                        <img src="https://picsum.photos/500/300?random=10" alt="关于" class="about-img">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 图片预览模态框 -->
+    <div id="imageModal" class="modal">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="modalImage">
+        <div id="modalCaption" class="modal-caption"></div>
+    </div>
+
+    <!-- 页面底部 -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 照片旅游合集. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript 文件 -->
+    <script src="script.js"></script>
+</body>
+</html>
