@@ -75,61 +75,82 @@ function initPhotoUpload() {
 
     // 处理选择的文件
     function handleFiles(files) {
-        const filesArray = Array.from(files);
-        
-        // 检查文件数量限制
-        if (uploadedPhotos.length + filesArray.length > 1000) {
-            alert('最多只能上传1000张照片');
-            return;
-        }
-        
-        // 过滤只保留图片文件
-        const imageFiles = filesArray.filter(file => file.type.startsWith('image/'));
-        
-        // 立即更新计数，显示正在处理
-        const initialCount = uploadedPhotos.length;
-        const totalToAdd = imageFiles.length;
-        
-        // 初始化上传进度
-        uploadStartTime = Date.now();
-        totalUploadedBytes = 0;
-        lastUploadedBytes = 0;
-        
-        // 计算总大小
-        const totalBytes = imageFiles.reduce((sum, file) => sum + file.size, 0);
-        
-        // 显示处理中的状态
-        photoCount.textContent = `正在处理... 已选择 ${initialCount} 张照片`;
-        uploadProgressBar.style.width = '0%';
-        uploadProgressText.textContent = '0%';
-        
-        // 统计已处理的照片数量
-        let processedCount = 0;
-        
-        // 开始更新上传速度
-        startSpeedUpdate();
-        
-        // 添加到上传列表
-        imageFiles.forEach(file => {
-            processPhoto(file, (fileSize) => {
-                processedCount++;
-                totalUploadedBytes += fileSize;
-                
-                // 更新上传进度
-                const progress = Math.min(100, Math.round((totalUploadedBytes / totalBytes) * 100));
-                uploadProgressBar.style.width = `${progress}%`;
-                uploadProgressText.textContent = `${progress}%`;
-                
-                // 当所有照片都处理完成后，更新信息和预览
-                if (processedCount === totalToAdd) {
-                    stopSpeedUpdate();
-                    updateUploadInfo();
-                    updatePreview();
-                    uploadProgressBar.style.width = '100%';
-                    uploadProgressText.textContent = '100%';
+        try {
+            // 确保files是可迭代对象
+            const filesArray = files ? Array.from(files) : [];
+            
+            // 检查文件数量限制
+            if (uploadedPhotos.length + filesArray.length > 1000) {
+                alert('最多只能上传1000张照片');
+                return;
+            }
+            
+            // 过滤只保留图片文件
+            const imageFiles = filesArray.filter(file => {
+                try {
+                    return file.type && file.type.startsWith('image/');
+                } catch (error) {
+                    console.error('检查文件类型时出错:', error);
+                    return false;
                 }
             });
-        });
+            
+            // 如果没有图片文件，给出提示
+            if (imageFiles.length === 0) {
+                alert('请选择图片文件（JPG、PNG等）');
+                return;
+            }
+            
+            // 立即更新计数，显示正在处理
+            const initialCount = uploadedPhotos.length;
+            const totalToAdd = imageFiles.length;
+            
+            // 初始化上传进度
+            uploadStartTime = Date.now();
+            totalUploadedBytes = 0;
+            lastUploadedBytes = 0;
+            
+            // 计算总大小
+            const totalBytes = imageFiles.reduce((sum, file) => sum + file.size, 0);
+            
+            // 显示处理中的状态
+            photoCount.textContent = `正在处理... 已选择 ${initialCount} 张照片`;
+            uploadProgressBar.style.width = '0%';
+            uploadProgressText.textContent = '0%';
+            
+            // 统计已处理的照片数量
+            let processedCount = 0;
+            
+            // 开始更新上传速度
+            startSpeedUpdate();
+            
+            // 添加到上传列表
+            imageFiles.forEach(file => {
+                processPhoto(file, (fileSize) => {
+                    processedCount++;
+                    totalUploadedBytes += fileSize;
+                    
+                    // 更新上传进度
+                    const progress = Math.min(100, Math.round((totalUploadedBytes / totalBytes) * 100));
+                    uploadProgressBar.style.width = `${progress}%`;
+                    uploadProgressText.textContent = `${progress}%`;
+                    
+                    // 当所有照片都处理完成后，更新信息和预览
+                    if (processedCount === totalToAdd) {
+                        stopSpeedUpdate();
+                        updateUploadInfo();
+                        updatePreview();
+                        uploadProgressBar.style.width = '100%';
+                        uploadProgressText.textContent = '100%';
+                    }
+                });
+            });
+        } catch (error) {
+            console.error('处理文件时出错:', error);
+            alert('处理文件时出错，请重试');
+            // 停止上传速度更新
+            stopSpeedUpdate();
+        }
     }
     
     // 开始更新上传速度
@@ -161,37 +182,96 @@ function initPhotoUpload() {
     function processPhoto(file, callback) {
         const reader = new FileReader();
         
+        // 处理读取错误
+        reader.onerror = () => {
+            console.error('文件读取失败:', file.name);
+            if (callback) {
+                callback(file.size);
+            }
+        };
+        
         reader.onload = (e) => {
             // 创建图片对象
             const img = new Image();
+            
+            // 处理图片加载错误
+            img.onerror = () => {
+                console.error('图片加载失败:', file.name);
+                // 即使图片加载失败，也创建一个基本的照片对象
+                const photo = {
+                    id: Date.now() + Math.random().toString(36).substr(2, 9),
+                    file: file,
+                    url: e.target.result,
+                    width: 0,
+                    height: 0,
+                    size: file.size,
+                    exif: {
+                        date: new Date(file.lastModified),
+                        location: "未知地点",
+                        camera: "未知",
+                        make: "未知",
+                        model: "未知"
+                    },
+                    season: getSeasonFromDate(new Date(file.lastModified)),
+                    location: "未知地点"
+                };
+                
+                uploadedPhotos.push(photo);
+                if (callback) {
+                    callback(file.size);
+                }
+            };
+            
             img.onload = () => {
-                // 提取EXIF信息
-                extractEXIF(file, img, (exifData) => {
-                    const photo = {
-                        id: Date.now() + Math.random().toString(36).substr(2, 9),
-                        file: file,
-                        url: e.target.result,
-                        width: img.width,
-                        height: img.height,
-                        size: file.size,
-                        exif: exifData,
-                        season: getSeasonFromDate(exifData.date),
-                        location: exifData.location
-                    };
-                    
-                    uploadedPhotos.push(photo);
-                    
-                    // 调用回调函数，通知照片处理完成，并传递文件大小
+                try {
+                    // 提取EXIF信息
+                    extractEXIF(file, img, (exifData) => {
+                        const photo = {
+                            id: Date.now() + Math.random().toString(36).substr(2, 9),
+                            file: file,
+                            url: e.target.result,
+                            width: img.width,
+                            height: img.height,
+                            size: file.size,
+                            exif: exifData,
+                            season: getSeasonFromDate(exifData.date),
+                            location: exifData.location
+                        };
+                        
+                        uploadedPhotos.push(photo);
+                        
+                        // 调用回调函数，通知照片处理完成，并传递文件大小
+                        if (callback) {
+                            callback(file.size);
+                        }
+                    });
+                } catch (error) {
+                    console.error('处理照片时出错:', error);
+                    // 即使处理出错，也要调用回调，否则会阻塞整个上传流程
                     if (callback) {
                         callback(file.size);
                     }
-                });
+                }
             };
             
-            img.src = e.target.result;
+            try {
+                img.src = e.target.result;
+            } catch (error) {
+                console.error('设置图片源时出错:', error);
+                if (callback) {
+                    callback(file.size);
+                }
+            }
         };
         
-        reader.readAsDataURL(file);
+        try {
+            reader.readAsDataURL(file);
+        } catch (error) {
+            console.error('读取文件时出错:', error);
+            if (callback) {
+                callback(file.size);
+            }
+        }
     }
 
     // 8. 提取EXIF信息
@@ -204,68 +284,117 @@ function initPhotoUpload() {
             model: null
         };
         
-        // 使用EXIF.js提取元数据
-        EXIF.getData(img, function() {
-            // 获取拍摄日期
-            const dateTaken = EXIF.getTag(this, "DateTimeOriginal") || 
-                             EXIF.getTag(this, "DateTimeDigitized") || 
-                             file.lastModifiedDate;
-            
-            if (dateTaken) {
-                exifData.date = new Date(dateTaken);
-            } else {
-                exifData.date = new Date(file.lastModified);
-            }
-            
-            // 获取相机信息
-            exifData.make = EXIF.getTag(this, "Make") || "未知";
-            exifData.model = EXIF.getTag(this, "Model") || "未知";
-            exifData.camera = `${exifData.make} ${exifData.model}`;
-            
-            // 获取地理位置（需要相机支持GPS）
-            const gpsLat = EXIF.getTag(this, "GPSLatitude");
-            const gpsLatRef = EXIF.getTag(this, "GPSLatitudeRef");
-            const gpsLon = EXIF.getTag(this, "GPSLongitude");
-            const gpsLonRef = EXIF.getTag(this, "GPSLongitudeRef");
-            
-            if (gpsLat && gpsLon) {
-                const latitude = convertGPSCoordinate(gpsLat, gpsLatRef);
-                const longitude = convertGPSCoordinate(gpsLon, gpsLonRef);
-                exifData.location = `GPS: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
-            } else {
-                exifData.location = "未知地点";
-            }
-            
+        try {
+            // 使用EXIF.js提取元数据
+            EXIF.getData(img, function() {
+                try {
+                    // 获取拍摄日期
+                    const dateTaken = EXIF.getTag(this, "DateTimeOriginal") || 
+                                     EXIF.getTag(this, "DateTimeDigitized") || 
+                                     file.lastModifiedDate;
+                    
+                    if (dateTaken) {
+                        exifData.date = new Date(dateTaken);
+                    } else {
+                        exifData.date = new Date(file.lastModified);
+                    }
+                    
+                    // 获取相机信息
+                    exifData.make = EXIF.getTag(this, "Make") || "未知";
+                    exifData.model = EXIF.getTag(this, "Model") || "未知";
+                    exifData.camera = `${exifData.make} ${exifData.model}`;
+                    
+                    // 获取地理位置（需要相机支持GPS）
+                    const gpsLat = EXIF.getTag(this, "GPSLatitude");
+                    const gpsLatRef = EXIF.getTag(this, "GPSLatitudeRef");
+                    const gpsLon = EXIF.getTag(this, "GPSLongitude");
+                    const gpsLonRef = EXIF.getTag(this, "GPSLongitudeRef");
+                    
+                    if (gpsLat && gpsLon) {
+                        try {
+                            const latitude = convertGPSCoordinate(gpsLat, gpsLatRef);
+                            const longitude = convertGPSCoordinate(gpsLon, gpsLonRef);
+                            exifData.location = `GPS: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+                        } catch (error) {
+                            console.error('GPS坐标转换失败:', error);
+                            exifData.location = "未知地点";
+                        }
+                    } else {
+                        exifData.location = "未知地点";
+                    }
+                } catch (error) {
+                    console.error('EXIF提取失败:', error);
+                    // 设置默认值
+                    exifData.date = new Date(file.lastModified);
+                    exifData.location = "未知地点";
+                    exifData.camera = "未知";
+                    exifData.make = "未知";
+                    exifData.model = "未知";
+                }
+                
+                callback(exifData);
+            });
+        } catch (error) {
+            console.error('EXIF处理失败:', error);
+            // 设置默认值
+            exifData.date = new Date(file.lastModified);
+            exifData.location = "未知地点";
+            exifData.camera = "未知";
+            exifData.make = "未知";
+            exifData.model = "未知";
             callback(exifData);
-        });
+        }
     }
 
     // 转换GPS坐标
     function convertGPSCoordinate(coordinate, ref) {
-        let [deg, min, sec] = coordinate;
-        let decimalDegrees = deg + (min / 60) + (sec / 3600);
-        
-        if (ref === "S" || ref === "W") {
-            decimalDegrees = -decimalDegrees;
+        try {
+            // 确保coordinate是数组且有足够的元素
+            if (!Array.isArray(coordinate) || coordinate.length < 3) {
+                throw new Error('无效的GPS坐标格式');
+            }
+            
+            let [deg, min, sec] = coordinate;
+            
+            // 确保值是数字
+            deg = parseFloat(deg) || 0;
+            min = parseFloat(min) || 0;
+            sec = parseFloat(sec) || 0;
+            
+            let decimalDegrees = deg + (min / 60) + (sec / 3600);
+            
+            if (ref === "S" || ref === "W") {
+                decimalDegrees = -decimalDegrees;
+            }
+            
+            return decimalDegrees;
+        } catch (error) {
+            console.error('GPS坐标转换错误:', error);
+            return 0;
         }
-        
-        return decimalDegrees;
     }
 
     // 根据日期获取季节
     function getSeasonFromDate(date) {
-        if (!date) return 'spring';
-        
-        const month = date.getMonth() + 1;
-        
-        if (month >= 3 && month <= 5) {
+        try {
+            if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+                return 'spring';
+            }
+            
+            const month = date.getMonth() + 1;
+            
+            if (month >= 3 && month <= 5) {
+                return 'spring';
+            } else if (month >= 6 && month <= 8) {
+                return 'summer';
+            } else if (month >= 9 && month <= 11) {
+                return 'autumn';
+            } else {
+                return 'winter';
+            }
+        } catch (error) {
+            console.error('获取季节时出错:', error);
             return 'spring';
-        } else if (month >= 6 && month <= 8) {
-            return 'summer';
-        } else if (month >= 9 && month <= 11) {
-            return 'autumn';
-        } else {
-            return 'winter';
         }
     }
 
