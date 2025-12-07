@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initNavLinks();
     initPhotoGalleries();
     initPhotoUpload();
+    initGalleryTabs();
+    initTimeline();
+    initMapView();
 });
 
 // 全局变量
@@ -27,8 +30,17 @@ function initPhotoUpload() {
     const generateBtn = document.getElementById('generateBtn');
     const photoCount = document.getElementById('photoCount');
     const totalSize = document.getElementById('totalSize');
+    const uploadSpeed = document.getElementById('uploadSpeed');
+    const uploadProgressBar = document.getElementById('uploadProgressBar');
+    const uploadProgressText = document.getElementById('uploadProgressText');
     const previewGrid = document.getElementById('previewGrid');
     const previewPlaceholder = document.getElementById('previewPlaceholder');
+    
+    // 上传进度相关变量
+    let uploadStartTime = 0;
+    let totalUploadedBytes = 0;
+    let lastUploadedBytes = 0;
+    let speedUpdateInterval = null;
 
     // 点击上传区域触发文件选择
     uploadArea.addEventListener('click', () => {
@@ -78,23 +90,71 @@ function initPhotoUpload() {
         const initialCount = uploadedPhotos.length;
         const totalToAdd = imageFiles.length;
         
+        // 初始化上传进度
+        uploadStartTime = Date.now();
+        totalUploadedBytes = 0;
+        lastUploadedBytes = 0;
+        
+        // 计算总大小
+        const totalBytes = imageFiles.reduce((sum, file) => sum + file.size, 0);
+        
         // 显示处理中的状态
         photoCount.textContent = `正在处理... 已选择 ${initialCount} 张照片`;
+        uploadProgressBar.style.width = '0%';
+        uploadProgressText.textContent = '0%';
         
         // 统计已处理的照片数量
         let processedCount = 0;
         
+        // 开始更新上传速度
+        startSpeedUpdate();
+        
         // 添加到上传列表
         imageFiles.forEach(file => {
-            processPhoto(file, () => {
+            processPhoto(file, (fileSize) => {
                 processedCount++;
+                totalUploadedBytes += fileSize;
+                
+                // 更新上传进度
+                const progress = Math.min(100, Math.round((totalUploadedBytes / totalBytes) * 100));
+                uploadProgressBar.style.width = `${progress}%`;
+                uploadProgressText.textContent = `${progress}%`;
+                
                 // 当所有照片都处理完成后，更新信息和预览
                 if (processedCount === totalToAdd) {
+                    stopSpeedUpdate();
                     updateUploadInfo();
                     updatePreview();
+                    uploadProgressBar.style.width = '100%';
+                    uploadProgressText.textContent = '100%';
                 }
             });
         });
+    }
+    
+    // 开始更新上传速度
+    function startSpeedUpdate() {
+        if (speedUpdateInterval) {
+            clearInterval(speedUpdateInterval);
+        }
+        
+        speedUpdateInterval = setInterval(() => {
+            const elapsedTime = (Date.now() - uploadStartTime) / 1000;
+            if (elapsedTime > 0) {
+                const currentSpeed = (totalUploadedBytes - lastUploadedBytes) / 1024 / 1024; // MB/s
+                uploadSpeed.textContent = `上传速度: ${currentSpeed.toFixed(2)} MB/s`;
+                lastUploadedBytes = totalUploadedBytes;
+            }
+        }, 1000);
+    }
+    
+    // 停止更新上传速度
+    function stopSpeedUpdate() {
+        if (speedUpdateInterval) {
+            clearInterval(speedUpdateInterval);
+            speedUpdateInterval = null;
+        }
+        uploadSpeed.textContent = '上传速度: 0 MB/s';
     }
 
     // 处理单张照片
@@ -121,9 +181,9 @@ function initPhotoUpload() {
                     
                     uploadedPhotos.push(photo);
                     
-                    // 调用回调函数，通知照片处理完成
+                    // 调用回调函数，通知照片处理完成，并传递文件大小
                     if (callback) {
-                        callback();
+                        callback(file.size);
                     }
                 });
             };
@@ -302,11 +362,188 @@ function generateUserGallery() {
     // 重新生成相册
     renderUserPhotoGalleries();
     
+    // 更新时间线和地图视图
+    initTimeline();
+    initMapView();
+    
+    // 生成分享链接
+    generateShareLink();
+    
     // 显示成功消息
     alert(`相册生成成功！共 ${uploadedPhotos.length} 张照片，已按季节分类。`);
     
-    // 滚动到春季相册
-    document.getElementById('spring').scrollIntoView({ behavior: 'smooth' });
+    // 滚动到相册区域
+    document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+}
+
+// 14. 生成分享链接
+function generateShareLink() {
+    // 这里只是模拟生成分享链接，实际项目中应该调用后端API生成
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareLink = `${baseUrl}?share=${Date.now()}`;
+    
+    // 显示分享容器
+    const shareContainer = document.getElementById('shareContainer');
+    const shareLinkInput = document.getElementById('shareLink');
+    
+    shareLinkInput.value = shareLink;
+    shareContainer.style.display = 'block';
+    
+    // 复制链接功能
+    const copyLinkBtn = document.getElementById('copyLinkBtn');
+    copyLinkBtn.addEventListener('click', () => {
+        shareLinkInput.select();
+        document.execCommand('copy');
+        alert('分享链接已复制到剪贴板！');
+    });
+}
+
+// 11. 相册标签页切换
+function initGalleryTabs() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetTab = btn.dataset.tab;
+            
+            // 移除所有激活状态
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // 添加当前激活状态
+            btn.classList.add('active');
+            document.getElementById(`${targetTab}Content`).classList.add('active');
+        });
+    });
+}
+
+// 12. 初始化时间线视图
+function initTimeline() {
+    const timelineContainer = document.getElementById('timelineContainer');
+    
+    // 如果没有上传照片，显示提示信息
+    if (uploadedPhotos.length === 0) {
+        timelineContainer.innerHTML = '<p style="text-align: center; color: #666; font-style: italic; padding: 40px;">请先上传照片，生成相册后查看时间线视图</p>';
+        return;
+    }
+    
+    // 按日期排序照片
+    const sortedPhotos = [...uploadedPhotos].sort((a, b) => {
+        return new Date(a.exif.date) - new Date(b.exif.date);
+    });
+    
+    // 按月份分组照片
+    const groupedPhotos = {};
+    sortedPhotos.forEach(photo => {
+        const date = new Date(photo.exif.date);
+        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        if (!groupedPhotos[monthKey]) {
+            groupedPhotos[monthKey] = [];
+        }
+        groupedPhotos[monthKey].push(photo);
+    });
+    
+    // 生成时间线HTML
+    let timelineHTML = '';
+    let isLeft = true;
+    
+    for (const [month, photos] of Object.entries(groupedPhotos)) {
+        // 格式化日期显示
+        const date = new Date(month + '-01');
+        const formattedDate = date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long' });
+        
+        // 创建时间线项目
+        timelineHTML += `
+            <div class="timeline-item ${isLeft ? 'left' : 'right'}">
+                <div class="timeline-content">
+                    <div class="timeline-date">${formattedDate}</div>
+                    <div class="timeline-title">${photos.length} 张照片</div>
+                    <div class="timeline-photos">
+        `;
+        
+        // 添加照片预览
+        photos.slice(0, 6).forEach(photo => {
+            timelineHTML += `<img src="${photo.url}" alt="照片" class="timeline-photo" title="${photo.title}">`;
+        });
+        
+        // 如果有更多照片，显示数量
+        if (photos.length > 6) {
+            timelineHTML += `<div class="timeline-more">+${photos.length - 6}</div>`;
+        }
+        
+        timelineHTML += `
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // 切换左右位置
+        isLeft = !isLeft;
+    }
+    
+    timelineContainer.innerHTML = timelineHTML;
+}
+
+// 13. 初始化地图视图
+function initMapView() {
+    const mapContainer = document.getElementById('mapContainer');
+    
+    // 如果没有上传照片，显示提示信息
+    if (uploadedPhotos.length === 0) {
+        mapContainer.innerHTML = '<p>请先上传照片，生成相册后查看地理位置视图</p>';
+        return;
+    }
+    
+    // 按地点分组照片
+    const locationGroups = {};
+    uploadedPhotos.forEach(photo => {
+        const location = photo.location;
+        if (!locationGroups[location]) {
+            locationGroups[location] = [];
+        }
+        locationGroups[location].push(photo);
+    });
+    
+    // 生成地图视图HTML
+    let mapHTML = `
+        <div class="location-list">
+            <h3>拍摄地点</h3>
+            <ul>
+    `;
+    
+    for (const [location, photos] of Object.entries(locationGroups)) {
+        mapHTML += `
+            <li>
+                <div class="location-item">
+                    <h4>${location}</h4>
+                    <p>${photos.length} 张照片</p>
+                    <div class="location-photos">
+        `;
+        
+        // 添加照片预览
+        photos.slice(0, 4).forEach(photo => {
+            mapHTML += `<img src="${photo.url}" alt="照片" class="timeline-photo" title="${photo.title}">`;
+        });
+        
+        // 如果有更多照片，显示数量
+        if (photos.length > 4) {
+            mapHTML += `<div class="timeline-more">+${photos.length - 4}</div>`;
+        }
+        
+        mapHTML += `
+                    </div>
+                </div>
+            </li>
+        `;
+    }
+    
+    mapHTML += `
+            </ul>
+        </div>
+    `;
+    
+    mapContainer.innerHTML = mapHTML;
 }
 
 // 10. 渲染用户相册

@@ -104,10 +104,30 @@
                         <div class="info-stats">
                             <span id="photoCount">已选择 0 张照片</span>
                             <span id="totalSize">总大小: 0 MB</span>
+                            <span id="uploadSpeed">上传速度: 0 MB/s</span>
+                        </div>
+                        <!-- 上传进度条 -->
+                        <div class="upload-progress-container">
+                            <div class="upload-progress" id="uploadProgress">
+                                <div class="upload-progress-bar" id="uploadProgressBar"></div>
+                                <span class="upload-progress-text" id="uploadProgressText">0%</span>
+                            </div>
                         </div>
                         <div class="info-actions">
                             <button class="btn btn-secondary" id="clearBtn">清空选择</button>
                             <button class="btn btn-primary" id="generateBtn" disabled>生成相册</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 分享功能 -->
+                    <div class="share-container" id="shareContainer" style="display: none;">
+                        <h3>分享您的相册</h3>
+                        <div class="share-content">
+                            <div class="share-link-container">
+                                <input type="text" id="shareLink" readonly placeholder="生成的分享链接">
+                                <button class="btn btn-secondary" id="copyLinkBtn">复制链接</button>
+                            </div>
+                            <p class="share-description">生成的链接可以在手机端查看，支持长网页形式浏览</p>
                         </div>
                     </div>
                     
@@ -123,39 +143,63 @@
             </div>
         </section>
 
-        <!-- 春季照片集 -->
-        <section id="spring" class="gallery-section">
+        <!-- 合集类型切换 -->
+        <section id="gallery" class="gallery-section">
             <div class="container">
-                <h2 class="section-title">春季旅行</h2>
-                <p class="section-description">春暖花开，万物复苏，记录春日里的美好时光</p>
-                <div class="photo-grid" id="springGrid"></div>
-            </div>
-        </section>
-
-        <!-- 夏季照片集 -->
-        <section id="summer" class="gallery-section">
-            <div class="container">
-                <h2 class="section-title">夏季旅行</h2>
-                <p class="section-description">阳光沙滩，海浪椰林，享受夏日的热情与活力</p>
-                <div class="photo-grid" id="summerGrid"></div>
-            </div>
-        </section>
-
-        <!-- 秋季照片集 -->
-        <section id="autumn" class="gallery-section">
-            <div class="container">
-                <h2 class="section-title">秋季旅行</h2>
-                <p class="section-description">红叶知秋，金风送爽，感受秋天的浪漫与诗意</p>
-                <div class="photo-grid" id="autumnGrid"></div>
-            </div>
-        </section>
-
-        <!-- 冬季照片集 -->
-        <section id="winter" class="gallery-section">
-            <div class="container">
-                <h2 class="section-title">冬季旅行</h2>
-                <p class="section-description">银装素裹，白雪皑皑，体验冬日的纯净与宁静</p>
-                <div class="photo-grid" id="winterGrid"></div>
+                <!-- 合集类型切换按钮 -->
+                <div class="gallery-tabs">
+                    <button class="tab-btn active" data-tab="theme">主题相册</button>
+                    <button class="tab-btn" data-tab="timeline">时间线</button>
+                    <button class="tab-btn" data-tab="map">地理位置</button>
+                </div>
+                
+                <!-- 主题相册视图 -->
+                <div class="tab-content active" id="themeContent">
+                    <h2 class="section-title">主题相册</h2>
+                    <p class="section-description">按主题分类的照片合集</p>
+                    
+                    <!-- 春季照片集 -->
+                    <div class="season-gallery">
+                        <h3 class="season-title">春季旅行</h3>
+                        <p class="season-description">春暖花开，万物复苏，记录春日里的美好时光</p>
+                        <div class="photo-grid" id="springGrid"></div>
+                    </div>
+                    
+                    <!-- 夏季照片集 -->
+                    <div class="season-gallery">
+                        <h3 class="season-title">夏季旅行</h3>
+                        <p class="season-description">阳光沙滩，海浪椰林，享受夏日的热情与活力</p>
+                        <div class="photo-grid" id="summerGrid"></div>
+                    </div>
+                    
+                    <!-- 秋季照片集 -->
+                    <div class="season-gallery">
+                        <h3 class="season-title">秋季旅行</h3>
+                        <p class="season-description">红叶知秋，金风送爽，感受秋天的浪漫与诗意</p>
+                        <div class="photo-grid" id="autumnGrid"></div>
+                    </div>
+                    
+                    <!-- 冬季照片集 -->
+                    <div class="season-gallery">
+                        <h3 class="season-title">冬季旅行</h3>
+                        <p class="season-description">银装素裹，白雪皑皑，体验冬日的纯净与宁静</p>
+                        <div class="photo-grid" id="winterGrid"></div>
+                    </div>
+                </div>
+                
+                <!-- 时间线视图 -->
+                <div class="tab-content" id="timelineContent">
+                    <h2 class="section-title">时间线</h2>
+                    <p class="section-description">按时间顺序排列的照片合集</p>
+                    <div class="timeline-container" id="timelineContainer"></div>
+                </div>
+                
+                <!-- 地理位置视图 -->
+                <div class="tab-content" id="mapContent">
+                    <h2 class="section-title">地理位置</h2>
+                    <p class="section-description">按地理位置分布的照片合集</p>
+                    <div class="map-container" id="mapContainer"></div>
+                </div>
             </div>
         </section>
 

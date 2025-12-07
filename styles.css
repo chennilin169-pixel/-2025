@@ -303,6 +303,334 @@ body {
     margin-top: 5px;
 }
 
+/* 合集类型切换样式 */
+.gallery-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 40px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 12px 24px;
+    background-color: #f0f4ff;
+    color: #667eea;
+    border: 2px solid #667eea;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.tab-btn:hover {
+    background-color: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.tab-btn.active {
+    background-color: #667eea;
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 季节相册样式 */
+.season-gallery {
+    margin-bottom: 60px;
+    padding: 30px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.season-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.season-description {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1rem;
+}
+
+/* 时间线样式 */
+.timeline-container {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+/* 时间线中心线 */
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    width: 4px;
+    background-color: #667eea;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.timeline-item {
+    padding: 20px 40px;
+    position: relative;
+    background-color: inherit;
+    width: 50%;
+}
+
+/* 时间线节点 */
+.timeline-item::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    right: -10px;
+    background-color: white;
+    border: 4px solid #667eea;
+    top: 25px;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+/* 左侧时间线 */
+.timeline-item.left {
+    left: 0;
+}
+
+/* 右侧时间线 */
+.timeline-item.right {
+    left: 50%;
+}
+
+/* 右侧时间线节点位置 */
+.timeline-item.right::after {
+    left: -10px;
+}
+
+/* 时间线内容 */
+.timeline-content {
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-date {
+    font-weight: 600;
+    color: #667eea;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.timeline-title {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.timeline-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.timeline-photo {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.timeline-photo:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 地图容器样式 */
+.map-container {
+    height: 600px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 1.2rem;
+    font-style: italic;
+    position: relative;
+    overflow: auto;
+}
+
+.map-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    opacity: 0.1;
+    z-index: 0;
+}
+
+.map-container > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* 位置列表样式 */
+.location-list {
+    width: 100%;
+    max-width: 1000px;
+    padding: 20px;
+}
+
+.location-list h3 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #333;
+    font-size: 1.8rem;
+}
+
+.location-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.location-item {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.location-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+}
+
+.location-item h4 {
+    margin: 0 0 10px 0;
+    color: #667eea;
+    font-size: 1.3rem;
+}
+
+.location-item p {
+    margin: 0 0 15px 0;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.location-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+/* 时间线中更多照片样式 */
+.timeline-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 80px;
+    background-color: #f0f4ff;
+    color: #667eea;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.timeline-more:hover {
+    background-color: #667eea;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .timeline-container::before {
+        left: 31px;
+    }
+    
+    .timeline-item {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+    }
+    
+    .timeline-item::after {
+        left: 21px;
+    }
+    
+    .timeline-item.right {
+        left: 0%;
+    }
+    
+    .timeline-item.right::after {
+        left: 21px;
+    }
+    
+    .gallery-tabs {
+        gap: 8px;
+    }
+    
+    .tab-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .location-photos {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 8px;
+    }
+    
+    .timeline-photo {
+        height: 70px;
+    }
+    
+    .timeline-more {
+        height: 70px;
+    }
+}
+
 /* 关于区域 */
 .about-section {
     background-color: #f0f4ff;
@@ -543,7 +871,101 @@ body {
     gap: 15px;
 }
 
-/* 预览区域样式 */
+/* 上传进度条样式 */
+.upload-progress-container {
+    margin: 20px 0;
+    width: 100%;
+}
+
+.upload-progress {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.upload-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.upload-progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 上传速度显示样式 */
+#uploadSpeed {
+    color: #667eea;
+    font-weight: 500;
+}
+
+/* 分享功能样式 */
+.share-container {
+    background-color: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-top: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.share-container h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.share-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.share-link-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+#shareLink {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid #e0e7ff;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #f8fafc;
+    color: #334155;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#shareLink:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.share-description {
+    text-align: center;
+    color: #666;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* 照片预览区域样式 */
 .preview-container {
     margin-top: 30px;
 }
