@@ -74,17 +74,31 @@ function initPhotoUpload() {
         // 过滤只保留图片文件
         const imageFiles = filesArray.filter(file => file.type.startsWith('image/'));
         
+        // 立即更新计数，显示正在处理
+        const initialCount = uploadedPhotos.length;
+        const totalToAdd = imageFiles.length;
+        
+        // 显示处理中的状态
+        photoCount.textContent = `正在处理... 已选择 ${initialCount} 张照片`;
+        
+        // 统计已处理的照片数量
+        let processedCount = 0;
+        
         // 添加到上传列表
         imageFiles.forEach(file => {
-            processPhoto(file);
+            processPhoto(file, () => {
+                processedCount++;
+                // 当所有照片都处理完成后，更新信息和预览
+                if (processedCount === totalToAdd) {
+                    updateUploadInfo();
+                    updatePreview();
+                }
+            });
         });
-        
-        updateUploadInfo();
-        updatePreview();
     }
 
     // 处理单张照片
-    function processPhoto(file) {
+    function processPhoto(file, callback) {
         const reader = new FileReader();
         
         reader.onload = (e) => {
@@ -106,8 +120,11 @@ function initPhotoUpload() {
                     };
                     
                     uploadedPhotos.push(photo);
-                    updateUploadInfo();
-                    updatePreview();
+                    
+                    // 调用回调函数，通知照片处理完成
+                    if (callback) {
+                        callback();
+                    }
                 });
             };
             
