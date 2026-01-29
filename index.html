@@ -3,240 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2025年照片旅游合集</title>
+    <title>海瑟音 × 刻律德菈｜星轨倒计时</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- EXIF.js库用于提取照片元数据 -->
-    <script src="https://cdn.jsdelivr.net/npm/exif-js@2.3.0/exif.min.js"></script>
 </head>
-<body>
-    <!-- 页面头部 -->
-    <header class="header">
-        <div class="header-content">
-            <h1 class="title">2025年照片旅游合集</h1>
-            <p class="subtitle">记录美好时光，分享旅行故事</p>
+<body data-target-date="2025-12-31T20:00:00">
+    <div class="nebula"></div>
+    <header class="hero">
+        <div class="hero__content">
+            <p class="hero__eyebrow">崩坏：星穹铁道 · 星核协奏</p>
+            <h1 class="hero__title">海瑟音 × 刻律德菈</h1>
+            <p class="hero__subtitle">星律回响交叠之刻 · 星轨倒计时仪</p>
+            <div class="hero__badges">
+                <span>虚数回廊</span>
+                <span>律动共鸣</span>
+                <span>星火倒映</span>
+            </div>
+        </div>
+        <div class="hero__sigils">
+            <div class="sigil sigil--left">
+                <span>海瑟音</span>
+                <small>音律 · 霜海</small>
+            </div>
+            <div class="sigil sigil--right">
+                <span>刻律德菈</span>
+                <small>律令 · 星誓</small>
+            </div>
         </div>
     </header>
 
-    <!-- 导航菜单 -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="#home" class="nav-link active">首页</a></li>
-                <li class="nav-item"><a href="#upload" class="nav-link">创建相册</a></li>
-                <li class="nav-item"><a href="#spring" class="nav-link">春季</a></li>
-                <li class="nav-item"><a href="#summer" class="nav-link">夏季</a></li>
-                <li class="nav-item"><a href="#autumn" class="nav-link">秋季</a></li>
-                <li class="nav-item"><a href="#winter" class="nav-link">冬季</a></li>
-                <li class="nav-item"><a href="#about" class="nav-link">关于</a></li>
-            </ul>
-            <!-- 移动端菜单按钮 -->
-            <button class="menu-toggle" id="menuToggle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- 主内容区域 -->
-    <main class="main-content">
-        <!-- 首页横幅 -->
-        <section id="home" class="hero-section">
-            <div class="hero-container">
-                <div class="hero-slideshow" id="heroSlideshow">
-                    <div class="slideshow-slide active">
-                        <img src="https://picsum.photos/1200/600?random=1" alt="旅行照片1" class="hero-image">
-                        <div class="slide-caption">
-                            <h2>春日樱花季</h2>
-                            <p>日本 · 东京</p>
-                        </div>
-                    </div>
-                    <div class="slideshow-slide">
-                        <img src="https://picsum.photos/1200/600?random=2" alt="旅行照片2" class="hero-image">
-                        <div class="slide-caption">
-                            <h2>夏日海滩</h2>
-                            <p>泰国 · 普吉岛</p>
-                        </div>
-                    </div>
-                    <div class="slideshow-slide">
-                        <img src="https://picsum.photos/1200/600?random=3" alt="旅行照片3" class="hero-image">
-                        <div class="slide-caption">
-                            <h2>秋日红叶</h2>
-                            <p>加拿大 · 枫叶大道</p>
-                        </div>
-                    </div>
-                    <div class="slideshow-slide">
-                        <img src="https://picsum.photos/1200/600?random=4" alt="旅行照片4" class="hero-image">
-                        <div class="slide-caption">
-                            <h2>冬日雪景</h2>
-                            <p>瑞士 · 阿尔卑斯山</p>
-                        </div>
-                    </div>
+    <main class="main">
+        <section class="countdown" aria-live="polite">
+            <div class="countdown__header">
+                <h2>下一次「星律同调」降临</h2>
+                <p>当海瑟音的旋律触及刻律德菈的律令，星轨将为你开启新的篇章。</p>
+            </div>
+            <div class="countdown__timer">
+                <div class="time-card">
+                    <span class="time-card__value" id="days">00</span>
+                    <span class="time-card__label">日</span>
                 </div>
-                <!-- 轮播控制按钮 -->
-                <button class="slideshow-btn prev-btn" id="prevBtn">&#10094;</button>
-                <button class="slideshow-btn next-btn" id="nextBtn">&#10095;</button>
-                <!-- 轮播指示器 -->
-                <div class="slideshow-indicators" id="slideshowIndicators"></div>
+                <div class="time-card">
+                    <span class="time-card__value" id="hours">00</span>
+                    <span class="time-card__label">时</span>
+                </div>
+                <div class="time-card">
+                    <span class="time-card__value" id="minutes">00</span>
+                    <span class="time-card__label">分</span>
+                </div>
+                <div class="time-card">
+                    <span class="time-card__value" id="seconds">00</span>
+                    <span class="time-card__label">秒</span>
+                </div>
+            </div>
+            <div class="countdown__progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <p class="countdown__note" id="countdownNote">星轨校准中，等待回响。</p>
+        </section>
+
+        <section class="lore">
+            <div class="lore__card">
+                <h3>海瑟音 · 回响之潮</h3>
+                <p>以音律为刃的旅者，擅长以旋律封存星潮。她的每一次拨弦，都像霜海的波纹，将心绪凝为星芒。</p>
+                <ul>
+                    <li>属性：冰</li>
+                    <li>星魂：潮汐之铃</li>
+                    <li>关键词：回声 · 余韵 · 静寂</li>
+                </ul>
+            </div>
+            <div class="lore__card">
+                <h3>刻律德菈 · 星律裁定</h3>
+                <p>律令与星火的化身，守望着宇宙秩序。她的箴言划破星幕，为同调者标记前行的轨迹。</p>
+                <ul>
+                    <li>属性：量子</li>
+                    <li>星魂：裁定之轮</li>
+                    <li>关键词：律令 · 星誓 · 守望</li>
+                </ul>
             </div>
         </section>
 
-        <!-- 照片上传区域 -->
-        <section id="upload" class="upload-section">
-            <div class="container">
-                <h2 class="section-title">创建您的专属相册</h2>
-                <p class="section-description">上传您的2025年旅行照片，系统将自动根据时间和地点为您分类整理</p>
-                
-                <div class="upload-container">
-                    <!-- 上传区域 -->
-                    <div class="upload-area" id="uploadArea">
-                        <div class="upload-content">
-                            <div class="upload-icon">📸</div>
-                            <h3>点击或拖拽照片到此处上传</h3>
-                            <p>支持JPG、PNG格式，最多可上传1000张照片</p>
-                            <input type="file" id="fileInput" accept="image/*" multiple>
-                            <button class="upload-btn" id="uploadBtn">选择照片</button>
-                        </div>
-                    </div>
-                    
-                    <!-- 上传信息和控制 -->
-                    <div class="upload-info">
-                        <div class="info-stats">
-                            <span id="photoCount">已选择 0 张照片</span>
-                            <span id="totalSize">总大小: 0 MB</span>
-                            <span id="uploadSpeed">上传速度: 0 MB/s</span>
-                        </div>
-                        <!-- 上传进度条 -->
-                        <div class="upload-progress-container">
-                            <div class="upload-progress" id="uploadProgress">
-                                <div class="upload-progress-bar" id="uploadProgressBar"></div>
-                                <span class="upload-progress-text" id="uploadProgressText">0%</span>
-                            </div>
-                        </div>
-                        <div class="info-actions">
-                            <button class="btn btn-secondary" id="clearBtn">清空选择</button>
-                            <button class="btn btn-primary" id="generateBtn" disabled>生成相册</button>
-                        </div>
-                    </div>
-                    
-                    <!-- 分享功能 -->
-                    <div class="share-container" id="shareContainer" style="display: none;">
-                        <h3>分享您的相册</h3>
-                        <div class="share-content">
-                            <div class="share-link-container">
-                                <input type="text" id="shareLink" readonly placeholder="生成的分享链接">
-                                <button class="btn btn-secondary" id="copyLinkBtn">复制链接</button>
-                            </div>
-                            <p class="share-description">生成的链接可以在手机端查看，支持长网页形式浏览</p>
-                        </div>
-                    </div>
-                    
-                    <!-- 照片预览区域 -->
-                    <div class="preview-container">
-                        <h3>照片预览</h3>
-                        <div class="preview-grid" id="previewGrid"></div>
-                        <div class="preview-placeholder" id="previewPlaceholder">
-                            <p>上传照片后将在这里显示预览</p>
-                        </div>
-                    </div>
+        <section class="ritual">
+            <h2>同调仪式</h2>
+            <div class="ritual__grid">
+                <div class="ritual__item">
+                    <span>01</span>
+                    <h4>净化星核</h4>
+                    <p>在星海深处点燃海瑟音的回响，净化残留的余波。</p>
                 </div>
-            </div>
-        </section>
-
-        <!-- 合集类型切换 -->
-        <section id="gallery" class="gallery-section">
-            <div class="container">
-                <!-- 合集类型切换按钮 -->
-                <div class="gallery-tabs">
-                    <button class="tab-btn active" data-tab="theme">主题相册</button>
-                    <button class="tab-btn" data-tab="timeline">时间线</button>
-                    <button class="tab-btn" data-tab="map">地理位置</button>
+                <div class="ritual__item">
+                    <span>02</span>
+                    <h4>刻写律令</h4>
+                    <p>由刻律德菈的律印划出光芒，绘制星轨回路。</p>
                 </div>
-                
-                <!-- 主题相册视图 -->
-                <div class="tab-content active" id="themeContent">
-                    <h2 class="section-title">主题相册</h2>
-                    <p class="section-description">按主题分类的照片合集</p>
-                    
-                    <!-- 春季照片集 -->
-                    <div class="season-gallery">
-                        <h3 class="season-title">春季旅行</h3>
-                        <p class="season-description">春暖花开，万物复苏，记录春日里的美好时光</p>
-                        <div class="photo-grid" id="springGrid"></div>
-                    </div>
-                    
-                    <!-- 夏季照片集 -->
-                    <div class="season-gallery">
-                        <h3 class="season-title">夏季旅行</h3>
-                        <p class="season-description">阳光沙滩，海浪椰林，享受夏日的热情与活力</p>
-                        <div class="photo-grid" id="summerGrid"></div>
-                    </div>
-                    
-                    <!-- 秋季照片集 -->
-                    <div class="season-gallery">
-                        <h3 class="season-title">秋季旅行</h3>
-                        <p class="season-description">红叶知秋，金风送爽，感受秋天的浪漫与诗意</p>
-                        <div class="photo-grid" id="autumnGrid"></div>
-                    </div>
-                    
-                    <!-- 冬季照片集 -->
-                    <div class="season-gallery">
-                        <h3 class="season-title">冬季旅行</h3>
-                        <p class="season-description">银装素裹，白雪皑皑，体验冬日的纯净与宁静</p>
-                        <div class="photo-grid" id="winterGrid"></div>
-                    </div>
-                </div>
-                
-                <!-- 时间线视图 -->
-                <div class="tab-content" id="timelineContent">
-                    <h2 class="section-title">时间线</h2>
-                    <p class="section-description">按时间顺序排列的照片合集</p>
-                    <div class="timeline-container" id="timelineContainer"></div>
-                </div>
-                
-                <!-- 地理位置视图 -->
-                <div class="tab-content" id="mapContent">
-                    <h2 class="section-title">地理位置</h2>
-                    <p class="section-description">按地理位置分布的照片合集</p>
-                    <div class="map-container" id="mapContainer"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 关于页面 -->
-        <section id="about" class="about-section">
-            <div class="container">
-                <h2 class="section-title">关于这个合集</h2>
-                <div class="about-content">
-                    <div class="about-text">
-                        <p>这是一个记录2025年旅行经历的照片合集，包含了春夏秋冬四个季节的精彩瞬间。</p>
-                        <p>通过这个合集，我希望分享旅途中的美好时光，记录那些令人难忘的风景和故事。</p>
-                        <p>每一张照片都有它独特的故事，每一次旅行都带来新的体验和感悟。</p>
-                        <p>感谢您的访问，希望这些照片能给您带来愉悦和灵感！</p>
-                    </div>
-                    <div class="about-image">
-                        <img src="https://picsum.photos/500/300?random=10" alt="关于" class="about-img">
-                    </div>
+                <div class="ritual__item">
+                    <span>03</span>
+                    <h4>合鸣星誓</h4>
+                    <p>当倒计时归零，共鸣将唤醒新的星际誓约。</p>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- 图片预览模态框 -->
-    <div id="imageModal" class="modal">
-        <span class="close-modal">&times;</span>
-        <img class="modal-content" id="modalImage">
-        <div id="modalCaption" class="modal-caption"></div>
-    </div>
-
-    <!-- 页面底部 -->
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 照片旅游合集. 保留所有权利.</p>
-        </div>
+        <p>愿星轨指引你，与海瑟音与刻律德菈共鸣。</p>
     </footer>
 
-    <!-- JavaScript 文件 -->
     <script src="script.js"></script>
 </body>
 </html>
